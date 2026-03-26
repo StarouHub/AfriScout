@@ -83,24 +83,24 @@ export const BattleReport: React.FC = () => {
 
   return (
     <div className="space-y-12 pb-20">
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
         <div>
           <h2 className="text-xs font-mono text-brand-amber uppercase tracking-widest mb-2">Tactical Intelligence</h2>
-          <h1 className="text-5xl font-black uppercase tracking-tighter font-display">Pre-Match Battle Report</h1>
+          <h1 className="text-3xl lg:text-5xl font-black uppercase tracking-tighter font-display">Pre-Match Battle Report</h1>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <select 
             value={teamA.id} 
             onChange={(e) => setTeamA(CLUBS[e.target.value])}
-            className="bg-brand-surface border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-amber"
+            className="bg-brand-surface border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-amber w-full sm:w-auto"
           >
             {allClubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <div className="flex items-center text-brand-amber font-mono font-bold">VS</div>
+          <div className="flex items-center justify-center text-brand-amber font-mono font-bold">VS</div>
           <select 
             value={teamB.id} 
             onChange={(e) => setTeamB(CLUBS[e.target.value])}
-            className="bg-brand-surface border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-amber"
+            className="bg-brand-surface border border-white/10 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-brand-amber w-full sm:w-auto"
           >
             {allClubs.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -110,22 +110,22 @@ export const BattleReport: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Comparison Radar/Stats */}
         <div className="lg:col-span-2 space-y-8">
-          <section className="glass rounded-3xl p-8">
-            <div className="flex items-center justify-between mb-12">
+          <section className="glass rounded-3xl p-4 lg:p-8">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-12">
               <div className="text-center flex-1">
-                <Shield className="w-12 h-12 text-brand-amber mx-auto mb-2" />
-                <h3 className="text-xl font-bold font-display">{teamA.name}</h3>
-                <p className="text-xs text-white/40 font-mono uppercase">{teamA.formation}</p>
+                <Shield className="w-10 h-10 lg:w-12 lg:h-12 text-brand-amber mx-auto mb-2" />
+                <h3 className="text-lg lg:text-xl font-bold font-display">{teamA.name}</h3>
+                <p className="text-[10px] text-white/40 font-mono uppercase">{teamA.formation}</p>
               </div>
-              <div className="px-8">
-                <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
-                  <Swords className="w-6 h-6 text-brand-amber" />
+              <div className="px-4 lg:px-8 rotate-90 sm:rotate-0">
+                <div className="w-10 h-10 lg:w-12 lg:h-12 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
+                  <Swords className="w-5 h-5 lg:w-6 lg:h-6 text-brand-amber" />
                 </div>
               </div>
               <div className="text-center flex-1">
-                <Shield className="w-12 h-12 text-brand-green mx-auto mb-2" />
-                <h3 className="text-xl font-bold font-display">{teamB.name}</h3>
-                <p className="text-xs text-white/40 font-mono uppercase">{teamB.formation}</p>
+                <Shield className="w-10 h-10 lg:w-12 lg:h-12 text-brand-green mx-auto mb-2" />
+                <h3 className="text-lg lg:text-xl font-bold font-display">{teamB.name}</h3>
+                <p className="text-[10px] text-white/40 font-mono uppercase">{teamB.formation}</p>
               </div>
             </div>
 

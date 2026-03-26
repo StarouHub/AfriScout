@@ -19,6 +19,7 @@ export default function App() {
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedClub, setSelectedClub] = useState<Club | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   const handleCountryClick = (countryId: string) => {
@@ -42,45 +43,77 @@ export default function App() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-brand-dark overflow-hidden">
+    <div className="flex min-h-screen bg-brand-dark overflow-hidden relative">
+      {/* Mobile Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Sidebar */}
-      <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-brand-surface border-r border-white/5 transition-all duration-300 flex flex-col z-50`}>
-        <div className="p-6 flex items-center gap-3">
-          <div className="w-8 h-8 bg-brand-green rounded flex items-center justify-center">
-            <Globe className="text-black w-5 h-5" />
+      <aside className={`
+        fixed lg:relative inset-y-0 left-0 z-[70]
+        ${isSidebarOpen ? 'w-64' : 'w-20'} 
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        bg-brand-surface border-r border-white/5 transition-all duration-300 flex flex-col
+      `}>
+        <div className="p-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-brand-green rounded flex items-center justify-center">
+              <Globe className="text-black w-5 h-5" />
+            </div>
+            {(isSidebarOpen || isMobileMenuOpen) && <span className="text-xl font-black tracking-tighter">AFRISCOUT</span>}
           </div>
-          {isSidebarOpen && <span className="text-xl font-black tracking-tighter">AFRISCOUT</span>}
+          <button 
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="lg:hidden p-2 text-white/50 hover:text-white"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setCurrentView(item.id as View)}
+              onClick={() => {
+                setCurrentView(item.id as View);
+                setIsMobileMenuOpen(false);
+              }}
               className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors ${
                 currentView === item.id ? 'bg-brand-amber text-black' : 'text-white/50 hover:bg-white/5 hover:text-white'
               }`}
             >
               <item.icon className="w-5 h-5" />
-              {isSidebarOpen && <span className="font-medium">{item.label}</span>}
+              {(isSidebarOpen || isMobileMenuOpen) && <span className="font-medium">{item.label}</span>}
             </button>
           ))}
         </nav>
 
         <div className="p-4 border-t border-white/5 space-y-2">
           <button 
-            onClick={() => setCurrentView('settings')}
+            onClick={() => {
+              setCurrentView('settings');
+              setIsMobileMenuOpen(false);
+            }}
             className={`w-full flex items-center gap-4 p-3 rounded-xl transition-colors ${
               currentView === 'settings' ? 'bg-brand-amber text-black' : 'text-white/50 hover:bg-white/5 hover:text-white'
             }`}
           >
             <Settings className="w-5 h-5" />
-            {isSidebarOpen && <span className="font-medium">Settings</span>}
+            {(isSidebarOpen || isMobileMenuOpen) && <span className="font-medium">Settings</span>}
           </button>
           <div className="p-3 glass rounded-xl">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-brand-amber/20 flex items-center justify-center text-brand-amber font-bold text-xs">ST</div>
-              {isSidebarOpen && (
+              {(isSidebarOpen || isMobileMenuOpen) && (
                 <div>
                   <p className="text-xs font-bold">Starou</p>
                   <p className="text-[10px] text-white/40">Club Tier</p>
@@ -94,20 +127,26 @@ export default function App() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="h-20 border-b border-white/5 px-8 flex items-center justify-between bg-brand-dark/50 backdrop-blur-xl z-40">
+        <header className="h-16 lg:h-20 border-b border-white/5 px-4 lg:px-8 flex items-center justify-between bg-brand-dark/50 backdrop-blur-xl z-40">
           <div className="flex items-center gap-4 flex-1 max-w-xl">
-            <div className="relative w-full">
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-2 text-white/50 hover:text-white"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <div className="relative w-full hidden sm:block">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
               <input 
                 type="text" 
                 placeholder="Search clubs, players, or countries..." 
-                className="w-full bg-white/5 border border-white/10 rounded-full py-2.5 pl-12 pr-4 text-sm focus:outline-none focus:border-brand-green/50 transition-colors"
+                className="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 lg:py-2.5 lg:pl-12 pr-4 text-sm focus:outline-none focus:border-brand-green/50 transition-colors"
               />
             </div>
           </div>
           
-          <div className="flex items-center gap-6 relative">
-            <div className="flex items-center gap-2 text-xs font-mono text-brand-green">
+          <div className="flex items-center gap-3 lg:gap-6 relative">
+            <div className="hidden md:flex items-center gap-2 text-xs font-mono text-brand-green">
               <span className="w-2 h-2 bg-brand-green rounded-full animate-pulse" />
               LIVE MATCHES: 4
             </div>
@@ -123,7 +162,7 @@ export default function App() {
         </header>
 
         {/* Viewport */}
-        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar pb-24 lg:pb-8">
           <AnimatePresence mode="wait">
             {currentView === 'home' && (
               <motion.div
@@ -134,27 +173,29 @@ export default function App() {
                 className="space-y-12"
               >
                 <div className="max-w-4xl">
-                  <h1 className="text-6xl font-black uppercase tracking-tighter mb-4 leading-none font-display">
-                    Data as a <span className="text-brand-amber">Weapon</span>, <br /> Not Decoration.
+                  <h1 className="text-4xl lg:text-6xl font-black uppercase tracking-tighter mb-4 leading-none font-display">
+                    Data as a <span className="text-brand-amber">Weapon</span>, <br className="hidden sm:block" /> Not Decoration.
                   </h1>
-                  <p className="text-xl text-white/50 max-w-2xl">
+                  <p className="text-lg lg:text-xl text-white/50 max-w-2xl">
                     The ultimate intelligence platform for African football. Deep scouting, tactical analysis, and real-time CAF competition tracking.
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 items-center">
-                  <AfricaMap onCountryClick={handleCountryClick} activeCountries={activeCountries} />
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 lg:gap-12 items-center">
+                  <div className="w-full overflow-hidden">
+                    <AfricaMap onCountryClick={handleCountryClick} activeCountries={activeCountries} />
+                  </div>
                   
-                  <div className="space-y-8">
-                    <div className="glass p-8 rounded-3xl border-l-4 border-l-brand-green">
-                      <h3 className="text-xs font-mono text-brand-green uppercase tracking-widest mb-4">Spotlight: Club of the Week</h3>
-                      <div className="flex items-center gap-6">
-                        <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 overflow-hidden">
-                          <Shield className="w-10 h-10 text-brand-amber" />
+                  <div className="space-y-6 lg:space-y-8">
+                    <div className="glass p-6 lg:p-8 rounded-3xl border-l-4 border-l-brand-green">
+                      <h3 className="text-[10px] lg:text-xs font-mono text-brand-green uppercase tracking-widest mb-4">Spotlight: Club of the Week</h3>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 lg:gap-6">
+                        <div className="w-16 h-16 lg:w-20 lg:h-20 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 overflow-hidden shrink-0">
+                          <Shield className="w-8 h-8 lg:w-10 lg:h-10 text-brand-amber" />
                         </div>
                         <div>
-                          <h4 className="text-2xl font-bold">Al Ahly SC</h4>
-                          <p className="text-white/50 text-sm mb-4">11× CAF Champions League Winners</p>
+                          <h4 className="text-xl lg:text-2xl font-bold">Al Ahly SC</h4>
+                          <p className="text-white/50 text-xs lg:text-sm mb-4">11× CAF Champions League Winners</p>
                           <button 
                             onClick={() => handleClubClick(CLUBS['al-ahly'])}
                             className="bg-white text-black px-6 py-2 rounded-full text-sm font-bold hover:bg-brand-green transition-colors"
@@ -165,16 +206,16 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="glass p-6 rounded-2xl">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                      <div className="glass p-5 lg:p-6 rounded-2xl">
                         <p className="text-[10px] font-mono text-white/40 uppercase mb-2">Upcoming Fixture</p>
                         <p className="text-sm font-bold">Espérance vs Al Ahly</p>
-                        <p className="text-xs text-brand-amber font-mono mt-1">22:00 UTC • SEMI-FINALS</p>
+                        <p className="text-[10px] lg:text-xs text-brand-amber font-mono mt-1">22:00 UTC • SEMI-FINALS</p>
                       </div>
-                      <div className="glass p-6 rounded-2xl">
+                      <div className="glass p-5 lg:p-6 rounded-2xl">
                         <p className="text-[10px] font-mono text-white/40 uppercase mb-2">Trending Player</p>
                         <p className="text-sm font-bold">Emam Ashour</p>
-                        <p className="text-xs text-brand-green font-mono mt-1">FORM: 9.2 • CM</p>
+                        <p className="text-[10px] lg:text-xs text-brand-green font-mono mt-1">FORM: 9.2 • CM</p>
                       </div>
                     </div>
                   </div>
@@ -190,21 +231,21 @@ export default function App() {
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-8"
               >
-                <header className="flex items-end justify-between">
+                <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                   <div>
                     <h2 className="text-xs font-mono text-brand-amber uppercase tracking-widest mb-2">Teams Hub</h2>
-                    <h1 className="text-5xl font-black uppercase tracking-tighter">
+                    <h1 className="text-3xl lg:text-5xl font-black uppercase tracking-tighter">
                       {selectedCountry ? COUNTRIES.find(c => c.id === selectedCountry)?.name : 'All Teams'}
                     </h1>
                   </div>
-                  <div className="text-right max-w-md">
-                    <p className="text-sm text-white/50 italic">
+                  <div className="text-left lg:text-right max-w-md">
+                    <p className="text-xs lg:text-sm text-white/50 italic">
                       {selectedCountry ? COUNTRIES.find(c => c.id === selectedCountry)?.performanceSummary : 'Select a country from the map to view detailed team intelligence.'}
                     </p>
                   </div>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
                   {selectedCountry ? (
                     COUNTRIES.find(c => c.id === selectedCountry)?.clubs.map(clubId => (
                       <ClubCard 
@@ -283,6 +324,30 @@ export default function App() {
           </AnimatePresence>
         </div>
       </main>
+      {/* Mobile Bottom Nav */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-brand-surface/90 backdrop-blur-xl border-t border-white/5 px-4 py-3 flex items-center justify-between z-50">
+        {navItems.slice(0, 4).map((item) => (
+          <button
+            key={item.id}
+            onClick={() => setCurrentView(item.id as View)}
+            className={`flex flex-col items-center gap-1 transition-colors ${
+              currentView === item.id ? 'text-brand-amber' : 'text-white/40'
+            }`}
+          >
+            <item.icon className="w-5 h-5" />
+            <span className="text-[10px] font-bold uppercase tracking-tighter">{item.id === 'home' ? 'Map' : item.label.split(' ')[0]}</span>
+          </button>
+        ))}
+        <button
+          onClick={() => setCurrentView('settings')}
+          className={`flex flex-col items-center gap-1 transition-colors ${
+            currentView === 'settings' ? 'text-brand-amber' : 'text-white/40'
+          }`}
+        >
+          <Settings className="w-5 h-5" />
+          <span className="text-[10px] font-bold uppercase tracking-tighter">Set</span>
+        </button>
+      </nav>
     </div>
   );
 }

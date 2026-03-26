@@ -19,14 +19,14 @@ export const ClubDetail: React.FC<ClubDetailProps> = ({ club, onBack }) => {
         <ChevronLeft className="w-4 h-4" /> Back to Hub
       </button>
 
-      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div className="flex items-center gap-6">
-          <div className="w-24 h-24 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 overflow-hidden">
-            <Shield className="w-12 h-12 text-brand-green" />
+      <header className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="w-20 h-20 lg:w-24 lg:h-24 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 overflow-hidden shrink-0">
+            <Shield className="w-10 h-10 lg:w-12 lg:h-12 text-brand-green" />
           </div>
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-4xl font-black uppercase tracking-tighter font-display">{club.name}</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+              <h1 className="text-3xl lg:text-4xl font-black uppercase tracking-tighter font-display">{club.name}</h1>
               <div className="flex items-center gap-2">
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                   club.tier === 'A' ? 'bg-brand-amber text-black' :
@@ -40,90 +40,92 @@ export const ClubDetail: React.FC<ClubDetailProps> = ({ club, onBack }) => {
                 </span>
               </div>
             </div>
-            <p className="text-white/50 font-mono text-sm uppercase tracking-widest">
+            <p className="text-white/50 font-mono text-[10px] lg:text-sm uppercase tracking-widest">
               {club.country} • {club.stadium} ({club.capacity})
             </p>
           </div>
         </div>
-        <div className="flex gap-4">
-          <div className="text-right">
+        <div className="flex gap-4 lg:gap-8 border-t lg:border-t-0 border-white/5 pt-4 lg:pt-0">
+          <div className="text-left lg:text-right">
             <p className="text-[10px] font-mono text-white/40 uppercase">Manager</p>
-            <p className="text-xl font-bold">{club.manager.name}</p>
+            <p className="text-lg lg:text-xl font-bold">{club.manager.name}</p>
           </div>
           <div className="w-px h-10 bg-white/10" />
-          <div className="text-right">
+          <div className="text-left lg:text-right">
             <p className="text-[10px] font-mono text-white/40 uppercase">Formation</p>
-            <p className="text-xl font-bold text-brand-green">{club.formation}</p>
+            <p className="text-lg lg:text-xl font-bold text-brand-green">{club.formation}</p>
           </div>
         </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Squad Module */}
-        <section className="lg:col-span-2 glass rounded-3xl p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-3 font-display">
+        <section className="lg:col-span-2 glass rounded-3xl p-4 lg:p-8 overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <h2 className="text-xl lg:text-2xl font-black uppercase tracking-tighter flex items-center gap-3 font-display">
               <Users className="text-brand-amber" /> Squad & Intelligence
             </h2>
-            <span className="text-xs font-mono text-white/40">{club.squad.length} Registered Players</span>
+            <span className="text-[10px] font-mono text-white/40">{club.squad.length} Registered Players</span>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-white/5 text-[10px] font-mono text-white/40 uppercase tracking-widest">
-                  <th className="pb-4 font-medium">Player</th>
-                  <th className="pb-4 font-medium">Pos</th>
-                  <th className="pb-4 font-medium">Age</th>
-                  <th className="pb-4 font-medium">Scout Note</th>
-                  <th className="pb-4 font-medium">Form</th>
-                  <th className="pb-4 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {club.squad.map((player) => (
-                  <tr key={player.id} className={`group hover:bg-white/5 transition-colors ${player.isWeakPoint ? 'bg-red-500/5' : ''}`}>
-                    <td className="py-4">
-                      <div className="flex flex-col">
-                        <span className={`font-bold ${player.isWeakPoint ? 'text-red-400' : ''}`}>{player.name}</span>
-                        {player.isWeakPoint && <span className="text-[8px] font-mono text-red-500 uppercase">Weak Point Identified</span>}
-                      </div>
-                    </td>
-                    <td className="py-4 text-white/60 font-mono text-xs">{player.position}</td>
-                    <td className="py-4 text-white/60">{player.age}</td>
-                    <td className="py-4">
-                      <p className="text-[10px] text-white/50 italic max-w-[200px] leading-tight">
-                        {player.scoutNote || 'No detailed analysis available.'}
-                      </p>
-                    </td>
-                    <td className="py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-12 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full ${player.isWeakPoint ? 'bg-red-500' : 'bg-brand-green'}`}
-                            style={{ width: `${player.form * 10}%` }}
-                          />
-                        </div>
-                        <span className={`text-xs font-mono font-bold ${player.isWeakPoint ? 'text-red-400' : 'text-brand-green'}`}>{player.form}</span>
-                      </div>
-                    </td>
-                    <td className="py-4">
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
-                        player.status === 'fit' ? 'bg-brand-green/20 text-brand-green' : 'bg-red-500/20 text-red-500'
-                      }`}>
-                        {player.status.toUpperCase()}
-                      </span>
-                    </td>
+          <div className="overflow-x-auto -mx-4 lg:mx-0">
+            <div className="inline-block min-w-full align-middle px-4 lg:px-0">
+              <table className="min-w-full text-left">
+                <thead>
+                  <tr className="border-b border-white/5 text-[10px] font-mono text-white/40 uppercase tracking-widest">
+                    <th className="pb-4 font-medium">Player</th>
+                    <th className="pb-4 font-medium">Pos</th>
+                    <th className="pb-4 font-medium hidden sm:table-cell">Age</th>
+                    <th className="pb-4 font-medium hidden md:table-cell">Scout Note</th>
+                    <th className="pb-4 font-medium">Form</th>
+                    <th className="pb-4 font-medium">Status</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {club.squad.map((player) => (
+                    <tr key={player.id} className={`group hover:bg-white/5 transition-colors ${player.isWeakPoint ? 'bg-red-500/5' : ''}`}>
+                      <td className="py-4">
+                        <div className="flex flex-col">
+                          <span className={`font-bold text-sm lg:text-base ${player.isWeakPoint ? 'text-red-400' : ''}`}>{player.name}</span>
+                          {player.isWeakPoint && <span className="text-[8px] font-mono text-red-500 uppercase">Weak Point</span>}
+                        </div>
+                      </td>
+                      <td className="py-4 text-white/60 font-mono text-[10px] lg:text-xs">{player.position}</td>
+                      <td className="py-4 text-white/60 text-xs lg:text-sm hidden sm:table-cell">{player.age}</td>
+                      <td className="py-4 hidden md:table-cell">
+                        <p className="text-[10px] text-white/50 italic max-w-[200px] leading-tight">
+                          {player.scoutNote || 'No detailed analysis available.'}
+                        </p>
+                      </td>
+                      <td className="py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-1.5 bg-white/10 rounded-full overflow-hidden hidden sm:block">
+                            <div 
+                              className={`h-full ${player.isWeakPoint ? 'bg-red-500' : 'bg-brand-green'}`}
+                              style={{ width: `${player.form * 10}%` }}
+                            />
+                          </div>
+                          <span className={`text-xs font-mono font-bold ${player.isWeakPoint ? 'text-red-400' : 'text-brand-green'}`}>{player.form}</span>
+                        </div>
+                      </td>
+                      <td className="py-4">
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
+                          player.status === 'fit' ? 'bg-brand-green/20 text-brand-green' : 'bg-red-500/20 text-red-500'
+                        }`}>
+                          {player.status.toUpperCase()}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
         {/* Tactics Module */}
-        <section className="glass rounded-3xl p-8 space-y-8">
-          <h2 className="text-2xl font-black uppercase tracking-tighter flex items-center gap-3 font-display">
+        <section className="glass rounded-3xl p-4 lg:p-8 space-y-8">
+          <h2 className="text-xl lg:text-2xl font-black uppercase tracking-tighter flex items-center gap-3 font-display">
             <Target className="text-brand-amber" /> Tactics & System
           </h2>
           
